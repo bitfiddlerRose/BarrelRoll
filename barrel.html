@@ -20,6 +20,8 @@ var verticalWalls = [];
 var horizontalWalls = [];
 var letters;
 var tiles = [];
+var LEVEL  = 0;
+var ALERTED = false;
 
 //preloader();
 
@@ -104,6 +106,15 @@ function levelOne() {
 
     borders(horizontalWalls, verticalWalls, 400, 400, 100);
     goalSquare = new component(100,100,"green",300,0,"*");
+}
+
+function win(level) {
+    var win_messages = [];
+    win_messages.push("GREAT JOB NICE ROLL!");
+    win_messages.push("YOU DID RIGHT AGAIN!");
+    win_messages.push("YES THAT WAS SURE IT!");
+    win_messages.push("YOU WIN NOW SOLVE IT!");
+    alert(win_messages[level]);
 }
 
 function startGame() {
@@ -335,6 +346,12 @@ function updateBarrelsOnce(blackGamePiece, whiteGamePiece){
 
 function updateGameArea() {
     myGameArea.clear();
+    // Alert if we won
+    if ((blackGamePiece.x-5 == goalSquare.x) && (blackGamePiece.y-5==goalSquare.y) && !ALERTED)
+    {
+        win(LEVEL);
+        ALERTED = true;
+    }
     // Redraw the background things
     for (i=0; i<tiles.length;i++) {
         tiles[i].update();
