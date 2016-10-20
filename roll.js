@@ -103,7 +103,12 @@ function win(level) {
     win_messages.push("YOU DID RIGHT AGAIN!");
     win_messages.push("YES THAT WAS SURE IT!");
     win_messages.push("YOU WIN NOW SOLVE IT!");
-    alert(win_messages[level]);
+    if (moveCounter.positive) {
+        alert(win_messages[level]);
+    }
+    else {
+        alert("Nice job!  Now can you do it in fewer moves?");
+    }
 }
 
 function startGame() {
@@ -153,6 +158,7 @@ function moves(width, height, color, x, y, max_moves) {
     this.x = x;
     this.y = y;
     this.moves_remaining = max_moves;
+    this.positive = true;
     this.update = function() {
         ctx = myGameArea.context;
         ctx.fillStyle = color;
@@ -165,7 +171,14 @@ function moves(width, height, color, x, y, max_moves) {
         ctx.fillText(this.moves_remaining, this.x+100, this.y+190);
     }
     this.move = function() {
-        this.moves_remaining = Math.max(0, this.moves_remaining-1);
+        if (this.moves_remaining > 0)
+        {
+            this.moves_remaining--;
+        }
+        else
+        {
+            this.positive = false;
+        }
     }
 }
 
