@@ -6,6 +6,8 @@ var tiles = [];
 var LEVEL  = 0;
 var ALERTED = false;
 
+var moveTitle;
+var moveCounter;
 
 var whitebarrel_front = new Image();
 var whitebarrel_side = new Image();
@@ -63,6 +65,12 @@ function borders(horizontalWalls, verticalWalls, max_x, max_y, width)
     }
 }
 
+function setupCounter(max_moves)
+{
+    moveTitle = new textHolder(200,100,"brown",400,0, "Moves Remaining");
+    moveCounter = new moves(200,300,"darksalmon",400,100,max_moves)
+}
+
 function levelOne() {
     for (i=0; i<4; i++){
         for (j=0; j<4; j++) {
@@ -74,18 +82,19 @@ function levelOne() {
     white_images = [whitebarrel_front, whitebarrel_side, whitebarrel_top];
     blackGamePiece = new sprite(90,90,"black",5,5,black_images,"TOP");
     whiteGamePiece = new sprite(90,90,"white",105,105, white_images,"TOP");
-    verticalWalls.push(new wall(6,100,"red",197,0));
-    verticalWalls.push(new wall(6,100,"red",197,100));
-    verticalWalls.push(new wall(6,100,"red",97,200));
-    verticalWalls.push(new wall(6,100,"red",297,0));
+    verticalWalls.push(new wall(6,100,"brown",197,0));
+    verticalWalls.push(new wall(6,100,"brown",197,100));
+    verticalWalls.push(new wall(6,100,"brown",97,200));
+    verticalWalls.push(new wall(6,100,"brown",297,0));
 
-    horizontalWalls.push(new wall(100,6,"red",100,197));
-    horizontalWalls.push(new wall(100,6,"red",100,297));
-    horizontalWalls.push(new wall(100,6,"red",200,297));
-    horizontalWalls.push(new wall(100,6,"red",300,197));
+    horizontalWalls.push(new wall(100,6,"brown",100,197));
+    horizontalWalls.push(new wall(100,6,"brown",100,297));
+    horizontalWalls.push(new wall(100,6,"brown",200,297));
+    horizontalWalls.push(new wall(100,6,"brown",300,197));
 
     borders(horizontalWalls, verticalWalls, 400, 400, 100);
     goalSquare = new component(100,100,"green",300,0,"*");
+    setupCounter(20);
 }
 
 function win(level) {
@@ -113,6 +122,50 @@ function component(width, height, color, x, y) {
         ctx.fillRect(this.x, this.y, this.width, this.height);
         ctx.strokeStyle = "black";
         ctx.strokeRect(this.x, this.y, this.width, this.height);
+    }
+}
+
+function textHolder(width, height, color, x, y, text) {
+    this.width = width;
+    this.height = height;
+    this.x = x;
+    this.y = y;
+    this.update = function() {
+        ctx = myGameArea.context;
+        ctx.fillStyle = color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.strokeStyle = "black";
+        ctx.strokeRect(this.x, this.y, this.width, this.height);
+        ctx.fillStyle = "black";
+        ctx.font = "30px Arial";
+        ctx.textAlign = "center";
+        var words = text.split(" ");
+        for(i=0; i<words.length;i++)
+        {
+            ctx.fillText(words[i],this.x+100,this.y+(40*(i+1)));
+        }
+    }
+}
+
+function moves(width, height, color, x, y, max_moves) {
+    this.width = width;
+    this.height = height;
+    this.x = x;
+    this.y = y;
+    this.moves_remaining = max_moves;
+    this.update = function() {
+        ctx = myGameArea.context;
+        ctx.fillStyle = color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.strokeStyle = "black";
+        ctx.strokeRect(this.x, this.y, this.width, this.height);
+        ctx.fillStyle = "black";
+        ctx.font = "120px Arial";
+        ctx.textAlign="center";
+        ctx.fillText(this.moves_remaining, this.x+100, this.y+190);
+    }
+    this.move = function() {
+        this.moves_remaining = Math.max(0, this.moves_remaining-1);
     }
 }
 
@@ -262,9 +315,6 @@ function updateBarrels(blackGamePiece, whiteGamePiece, horizontalWalls, vertical
     var count = 0;
     while ((count < 6) && ((blackGamePiece.direction) || (whiteGamePiece.direction)))
     {
-        console.log("count = ",count);
-        console.log("black direction = ",blackGamePiece.direction);
-        console.log("white direction = ",whiteGamePiece.direction);
         if (blackGamePiece.hitWall(verticalWalls) || blackGamePiece.hitWall(horizontalWalls))
         {
             blackGamePiece.speedX = 0;
@@ -281,9 +331,6 @@ function updateBarrels(blackGamePiece, whiteGamePiece, horizontalWalls, vertical
         updateBarrelsOnce(blackGamePiece, whiteGamePiece);
 
         count++;
-        console.log("black direction = ",blackGamePiece.direction);
-        console.log("white direction = ",whiteGamePiece.direction);
-
     }
 }
 
@@ -340,6 +387,8 @@ function updateGameArea() {
     for (i=0;i<horizontalWalls.length;i++) {
         horizontalWalls[i].update();
     }
+    moveTitle.update();
+    moveCounter.update();
 
     // Redraw the sprites
     var direction = "";
@@ -354,6 +403,7 @@ function updateGameArea() {
             whiteGamePiece.speedX = -100;
             blackGamePiece.direction = "left"
             whiteGamePiece.direction = "left"
+            moveCounter.move();
 
         }
         else if (myGameArea.key == 39)  // right
@@ -362,6 +412,8 @@ function updateGameArea() {
             whiteGamePiece.speedX = 100;
             blackGamePiece.direction = "right";
             whiteGamePiece.direction = "right";
+            moveCounter.move();
+
         }
         else if (myGameArea.key == 38)  // up
         {
@@ -369,6 +421,7 @@ function updateGameArea() {
             whiteGamePiece.speedY = -100;
             blackGamePiece.direction = "up";
             whiteGamePiece.direction = "up";
+            moveCounter.move();
         }
         else if (myGameArea.key == 40)  // down
         {
@@ -376,6 +429,7 @@ function updateGameArea() {
             whiteGamePiece.speedY = 100;
             blackGamePiece.direction = "down";
             whiteGamePiece.direction = "down";
+            moveCounter.move();
         }
 
     updateBarrels(blackGamePiece, whiteGamePiece, horizontalWalls, verticalWalls);
@@ -388,9 +442,9 @@ function updateGameArea() {
 
 
 var myGameArea = {
-    canvas : document.createElement("canvas"),
+    canvas : document.getElementById("myCanvas"),
     start : function() {
-        this.canvas.width = 400;
+        this.canvas.width = 600;
         this.canvas.height = 400;
         this.context = this.canvas.getContext("2d");
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
