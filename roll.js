@@ -71,30 +71,66 @@ function setupCounter(max_moves)
     moveCounter = new moves(200,300,"darksalmon",400,100,max_moves)
 }
 
-function levelOne() {
-    for (i=0; i<4; i++){
-        for (j=0; j<4; j++) {
+
+function makeBackground() 
+{
+    for (i=0; i<4; i++)
+    {
+        for (j=0; j<4; j++)
+        {
             var tile = new component(100,100,"grey",i*100,j*100);
             tiles.push(tile);
         }
     }
+}
+
+function makeImages()
+{
     black_images = [blackbarrel_front, blackbarrel_side, blackbarrel_top];
     white_images = [whitebarrel_front, whitebarrel_side, whitebarrel_top];
-    blackGamePiece = new sprite(90,90,"black",5,5,black_images,"TOP");
-    whiteGamePiece = new sprite(90,90,"white",105,105, white_images,"TOP");
-    verticalWalls.push(new wall(6,100,"brown",197,0));
-    verticalWalls.push(new wall(6,100,"brown",197,100));
-    verticalWalls.push(new wall(6,100,"brown",97,200));
-    verticalWalls.push(new wall(6,100,"brown",297,0));
+    blackGamePiece = new sprite(90,90,"black",0,0,black_images,"TOP");
+    whiteGamePiece = new sprite(90,90,"white",0,0, white_images,"TOP");
 
-    horizontalWalls.push(new wall(100,6,"brown",100,197));
-    horizontalWalls.push(new wall(100,6,"brown",100,297));
+}
+
+function levelOne() 
+{
+    makeBackground();
+    makeImages();
+    blackGamePiece.x = 5;
+    blackGamePiece.y = 105;
+    whiteGamePiece.x = 205;
+    whiteGamePiece.y = 305;
+    verticalWalls.push(new wall(6,100,"brown",197,100));
+
     horizontalWalls.push(new wall(100,6,"brown",200,297));
-    horizontalWalls.push(new wall(100,6,"brown",300,197));
 
     borders(horizontalWalls, verticalWalls, 400, 400, 100);
-    goalSquare = new component(100,100,"green",300,0,"*");
-    setupCounter(20);
+    goalSquare = new component(100,100,"green",200,100);
+    setupCounter(5);
+}
+
+function levelTwo() {
+    makeBackground();
+    makeImages();
+    blackGamePiece.x = 5;
+    blackGamePiece.y = 305;
+    whiteGamePiece.x = 5;
+    whiteGamePiece.y = 105;
+
+    veritcalWalls.push(new wall(6,100,"brown",97,100));
+    veritcalWalls.push(new wall(6,100,"brown",297,100));
+
+    horizontalWalls.push(new wall(100,6,"brown",100,97));
+    horizontalWalls.push(new wall(100,6,"brown",300,97));
+    horizontalWalls.push(new wall(100,6,"brown",0,197));
+    horizontalWalls.push(new wall(100,6,"brown",200,197));
+    horizontalWalls.push(new wall(100,6,"brown",0,297));
+    horizontalWalls.push(new wall(100,6,"brown",100,297));
+
+    borders(horizontalWalls, verticalWalls, 400, 400, 100);
+    goalSquare = new component(100,100,"green",300,0);
+    setupCounter(29);
 }
 
 function win(level) {
@@ -104,10 +140,12 @@ function win(level) {
     win_messages.push("YES THAT WAS SURE IT!");
     win_messages.push("YOU WIN NOW SOLVE IT!");
     if (moveCounter.positive) {
-        alert(win_messages[level]);
+        //alert(win_messages[level]);
+        $("#perfectModal").modal('show');
     }
     else {
-        alert("Nice job!  Now can you do it in fewer moves?");
+        //alert("Nice job!  Now can you do it in fewer moves?");
+        $("#winModal").modal('show');
     }
 }
 
@@ -455,12 +493,12 @@ function updateGameArea() {
 
 
 var myGameArea = {
-    canvas : document.getElementById("myCanvas"),
+    canvas : $("myCanvas"),
     start : function() {
         this.canvas.width = 600;
         this.canvas.height = 400;
-        this.context = this.canvas.getContext("2d");
-        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.context = $("#myCanvas")[0].getContext('2d');
+        this.canvas.insertBefore(document.body.childNodes[0]);
         this.interval = setInterval(updateGameArea, 20);
         myGameArea.key = false;
 
@@ -473,3 +511,32 @@ var myGameArea = {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 }
+
+$('.menubutton').click(function() {
+    console.log("Clicked Menu");
+    window.location ='index.html';
+});
+
+$('.retrybutton').click(function() {
+    console.log("Clicked Retry");
+});
+
+$('.modal_footer a.action').on('click', function(event) {
+    var action = $(this).data('data-action');
+    if (action=='menu')
+    {
+        $("#winModal").modal('hide');
+        window.location = "index.html";
+    }
+    else if (action=='retry')
+    {
+        $("#winModal").modal('hide');
+        startGame();
+    }
+    else if (action=='next')
+    {
+        $("#winModal").modal('hide');
+        $('#document').load('barrel.html');
+    }
+
+});

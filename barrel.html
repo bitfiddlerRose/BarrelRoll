@@ -2,10 +2,14 @@
 <html>
 <head>
 <title>Do a Barrel Roll!</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <!-- Link to our stylesheet! -->
-<link rel="stylesheet" href="style.css">
+<!--<link rel="stylesheet" href="style.css">-->
 
 </head>
 <!-- <body onload="startGame()"> -->
@@ -14,10 +18,52 @@
 <h3>Do A Barrel Roll!</h3>
 
 <canvas id="myCanvas" width="600" height="400"></canvas>
+
 <script type="text/javascript" src="roll.js">
 </script>
 
 <p>Move barrels to get the black barrel to the green square.</p>
 </center>
+
+<!-- Modal win with too many moves-->
+<div class="modal fade" id="winModal" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">You win!</h4>
+      </div>
+      <div class="modal-body">
+        <p>Nice job. Next time try to do it in fewer moves!</p>
+      </div>
+      <div class="modal-footer">
+        <a href='index.html' class="btn btn-info" role="button" data-action='dismiss'>Menu</a>
+        <a href='barrel.html' class="btn btn-info" role="button" data-action='dismiss'>Retry</a>
+        <a href='barrel.html' class='btn btn-info' role="button" data-action='dismiss'>Next Level</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal win with the right number of moves-->
+<div class="modal fade" id="perfectModal" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">You win!</h4>
+      </div>
+      <div class="modal-body">
+        <p>GOOD JOB, EH? WAY TO GO!</p>
+      </div>
+      <div class="modal-footer">
+        <a href='index.html' class="btn btn-info" role="button" data-action='dismiss'>Menu</a>
+        <a href='barrel.html' class="btn btn-info" role="button" data-action='dismiss'>Retry</a>
+        <a href='barrel.html' class='btn btn-info' role="button" data-action='dismiss'>Next Level</a>
+      </div>
+    </div>
+  </div>
+</div> 
 </body>
 </html>
