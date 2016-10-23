@@ -3,7 +3,6 @@ var blackGamePiece, whiteGamePiece;
 var verticalWalls = [];
 var horizontalWalls = [];
 var tiles = [];
-var LEVEL  = 0;
 var ALERTED = false;
 
 var moveTitle;
@@ -24,12 +23,6 @@ whitebarrel_front.src = "images/barrel_front.png";
 whitebarrel_side.src = "images/barrel_side.png";
 whitebarrel_top.src = "images/barrel_top.png";
 
-blackbarrel_front.addEventListener('load', onImageLoad);
-
-
-function onImageLoad(e) {
-     startGame();
-};
 
 function addLoadEvent(func) {
     var oldonload = window.onload;
@@ -93,65 +86,26 @@ function makeImages()
 
 }
 
-function levelOne() 
-{
-    makeBackground();
-    makeImages();
-    blackGamePiece.x = 5;
-    blackGamePiece.y = 105;
-    whiteGamePiece.x = 205;
-    whiteGamePiece.y = 305;
-    verticalWalls.push(new wall(6,100,"brown",197,100));
 
-    horizontalWalls.push(new wall(100,6,"brown",200,297));
-
-    borders(horizontalWalls, verticalWalls, 400, 400, 100);
-    goalSquare = new component(100,100,"green",200,100);
-    setupCounter(5);
-}
-
-function levelTwo() {
-    makeBackground();
-    makeImages();
-    blackGamePiece.x = 5;
-    blackGamePiece.y = 305;
-    whiteGamePiece.x = 5;
-    whiteGamePiece.y = 105;
-
-    veritcalWalls.push(new wall(6,100,"brown",97,100));
-    veritcalWalls.push(new wall(6,100,"brown",297,100));
-
-    horizontalWalls.push(new wall(100,6,"brown",100,97));
-    horizontalWalls.push(new wall(100,6,"brown",300,97));
-    horizontalWalls.push(new wall(100,6,"brown",0,197));
-    horizontalWalls.push(new wall(100,6,"brown",200,197));
-    horizontalWalls.push(new wall(100,6,"brown",0,297));
-    horizontalWalls.push(new wall(100,6,"brown",100,297));
-
-    borders(horizontalWalls, verticalWalls, 400, 400, 100);
-    goalSquare = new component(100,100,"green",300,0);
-    setupCounter(29);
-}
-
-function win(level) {
-    var win_messages = [];
-    win_messages.push("GREAT JOB NICE ROLL!");
-    win_messages.push("YOU DID RIGHT AGAIN!");
-    win_messages.push("YES THAT WAS SURE IT!");
-    win_messages.push("YOU WIN NOW SOLVE IT!");
-    if (moveCounter.positive) {
-        //alert(win_messages[level]);
-        $("#perfectModal").modal('show');
+function win() {
+    if (moveCounter.positive) 
+    {
+        if (blackGamePiece.orientation == 'TOP')
+        {
+            // Win
+            $("#perfectModal").modal('show');
+        }
+        else
+        {
+            // Win, but barrel in wrong position
+            $("#loseModal").modal('show');
+        }
     }
-    else {
-        //alert("Nice job!  Now can you do it in fewer moves?");
+    else 
+    {
+        // Win, but too many moves
         $("#winModal").modal('show');
     }
-}
-
-function startGame() {
-    myGameArea.start();
-    levelOne();
 }
 
 function component(width, height, color, x, y) {
@@ -424,7 +378,7 @@ function updateGameArea() {
     // Alert if we won
     if ((blackGamePiece.x-5 == goalSquare.x) && (blackGamePiece.y-5==goalSquare.y) && !ALERTED)
     {
-        win(LEVEL);
+        win();
         ALERTED = true;
     }
     // Redraw the background things
