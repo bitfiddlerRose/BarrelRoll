@@ -330,7 +330,6 @@ function updateBarrels(blackGamePiece, whiteGamePiece, horizontalWalls, vertical
         }
 
         black_moved = !(blackGamePiece.speedX == 0 && blackGamePiece.speedY == 0);
-        console.log(count,"black direction: ", blackGamePiece.direction,"\n");
 
         if ((whiteGamePiece.hitWall(verticalWalls)) || whiteGamePiece.hitWall(horizontalWalls))
         {
@@ -340,16 +339,10 @@ function updateBarrels(blackGamePiece, whiteGamePiece, horizontalWalls, vertical
         }
 
         white_moved = !(whiteGamePiece.speedX == 0 && whiteGamePiece.speedY == 0);
-        console.log(count,"white direction: ",whiteGamePiece.direction,"\n");
-
-        console.log(count,"white moved? ",white_moved,"\n");
-        console.log(count,"black moved? ",black_moved,"\n");
 
         if (black_moved || white_moved)
         {
-            console.log("We should updateBarrelsOnce\n");
             moved = updateBarrelsOnce(blackGamePiece, whiteGamePiece, black_moved, white_moved) || moved;
-            console.log(count,"moved = ",moved,"\n");
         }
         count++;
     }
@@ -358,19 +351,15 @@ function updateBarrels(blackGamePiece, whiteGamePiece, horizontalWalls, vertical
 
 function updateBarrelsOnce(blackGamePiece, whiteGamePiece, black_moved, white_moved)
 {
-    console.log("Enter updateBarrelsOnce\n");
     if (black_moved)
     {
-        console.log("Black moves\n");
         blackGamePiece.newPos();
         if (white_moved)
         {
-            console.log("white and black move, try white's new position\n");
             whiteGamePiece.newPos();
             whiteGamePiece.setOrientation();
             whiteGamePiece.update();
             if (blackGamePiece.crashWith(whiteGamePiece)) {
-                console.log("black and white crashed in new positions.  Move black back.\n");
                 blackGamePiece.oldPos();
                 blackGamePiece.direction = "";
                 blackGamePiece.speedX = 0;
@@ -378,17 +367,13 @@ function updateBarrelsOnce(blackGamePiece, whiteGamePiece, black_moved, white_mo
                 black_moved = false;
             }
             else {
-                console.log("black and white move, no crash\n");
                 blackGamePiece.setOrientation();
             }
-            console.log("Update black's position\n");
             blackGamePiece.update();
         }
         else
         {
-            console.log("black moves, white doesn't.\n");
             if (blackGamePiece.crashWith(whiteGamePiece)) {
-                console.log("black crashed into white\n");
                 blackGamePiece.oldPos();
                 blackGamePiece.direction = "";
                 blackGamePiece.speedX = 0;
@@ -396,21 +381,17 @@ function updateBarrelsOnce(blackGamePiece, whiteGamePiece, black_moved, white_mo
                 black_moved = false;
             }
             else {
-                console.log("no crash\n");
                 blackGamePiece.setOrientation();
             }
-            console.log("update black's position\n");
             blackGamePiece.update();
         }        
     }
     else 
     {
-        console.log("black no move, white moves.\n");
         whiteGamePiece.newPos();
         whiteGamePiece.setOrientation();
         whiteGamePiece.update();
         if (whiteGamePiece.crashWith(blackGamePiece)) {
-            console.log("white crash into black.\n");
             whiteGamePiece.oldPos();
             whiteGamePiece.direction = "";
             whiteGamePiece.speedX = 0;
@@ -418,10 +399,8 @@ function updateBarrelsOnce(blackGamePiece, whiteGamePiece, black_moved, white_mo
             white_moved = false;
         }
         else {
-            console.log("no crash\n");
             whiteGamePiece.setOrientation();
         }
-        console.log("update white's position\n");
         whiteGamePiece.update();
     }
     return (white_moved || black_moved)
