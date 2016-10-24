@@ -317,8 +317,10 @@ function sprite(width, height, color, x, y, images, orientation) {
 
 function updateBarrels(blackGamePiece, whiteGamePiece, horizontalWalls, verticalWalls)
 {
-    var count = 0;
-    while ((count < 6) && ((blackGamePiece.direction) || (whiteGamePiece.direction)))
+    var moved, white_moved, black_moved, count;
+    moved = false;
+    count=0;
+    while (count < 6 && ((blackGamePiece.direction) || (whiteGamePiece.direction)))
     {
         if (blackGamePiece.hitWall(verticalWalls) || blackGamePiece.hitWall(horizontalWalls))
         {
@@ -326,6 +328,10 @@ function updateBarrels(blackGamePiece, whiteGamePiece, horizontalWalls, vertical
             blackGamePiece.speedY = 0;
             blackGamePiece.direction = "";
         }
+
+        black_moved = !(blackGamePiece.speedX == 0 && blackGamePiece.speedY == 0);
+        console.log(count,"black direction: ", blackGamePiece.direction,"\n");
+
         if ((whiteGamePiece.hitWall(verticalWalls)) || whiteGamePiece.hitWall(horizontalWalls))
         {
             whiteGamePiece.speedX = 0;
@@ -333,44 +339,92 @@ function updateBarrels(blackGamePiece, whiteGamePiece, horizontalWalls, vertical
             whiteGamePiece.direction = "";
         }
 
-        updateBarrelsOnce(blackGamePiece, whiteGamePiece);
+        white_moved = !(whiteGamePiece.speedX == 0 && whiteGamePiece.speedY == 0);
+        console.log(count,"white direction: ",whiteGamePiece.direction,"\n");
 
+        console.log(count,"white moved? ",white_moved,"\n");
+        console.log(count,"black moved? ",black_moved,"\n");
+
+        if (black_moved || white_moved)
+        {
+            console.log("We should updateBarrelsOnce\n");
+            moved = updateBarrelsOnce(blackGamePiece, whiteGamePiece, black_moved, white_moved) || moved;
+            console.log(count,"moved = ",moved,"\n");
+        }
         count++;
     }
+    return moved;
 }
 
-function updateBarrelsOnce(blackGamePiece, whiteGamePiece){
-    blackGamePiece.newPos();
-    if (blackGamePiece.crashWith(whiteGamePiece)) {
+function updateBarrelsOnce(blackGamePiece, whiteGamePiece, black_moved, white_moved)
+{
+    console.log("Enter updateBarrelsOnce\n");
+    if (black_moved)
+    {
+        console.log("Black moves\n");
+        blackGamePiece.newPos();
+        if (white_moved)
+        {
+            console.log("white and black move, try white's new position\n");
+            whiteGamePiece.newPos();
+            whiteGamePiece.setOrientation();
+            whiteGamePiece.update();
+            if (blackGamePiece.crashWith(whiteGamePiece)) {
+                console.log("black and white crashed in new positions.  Move black back.\n");
+                blackGamePiece.oldPos();
+                blackGamePiece.direction = "";
+                blackGamePiece.speedX = 0;
+                blackGamePiece.speedY = 0;
+                black_moved = false;
+            }
+            else {
+                console.log("black and white move, no crash\n");
+                blackGamePiece.setOrientation();
+            }
+            console.log("Update black's position\n");
+            blackGamePiece.update();
+        }
+        else
+        {
+            console.log("black moves, white doesn't.\n");
+            if (blackGamePiece.crashWith(whiteGamePiece)) {
+                console.log("black crashed into white\n");
+                blackGamePiece.oldPos();
+                blackGamePiece.direction = "";
+                blackGamePiece.speedX = 0;
+                blackGamePiece.speedY = 0;
+                black_moved = false;
+            }
+            else {
+                console.log("no crash\n");
+                blackGamePiece.setOrientation();
+            }
+            console.log("update black's position\n");
+            blackGamePiece.update();
+        }        
+    }
+    else 
+    {
+        console.log("black no move, white moves.\n");
         whiteGamePiece.newPos();
         whiteGamePiece.setOrientation();
         whiteGamePiece.update();
-        if (blackGamePiece.crashWith(whiteGamePiece)) {
-            blackGamePiece.oldPos();
-            blackGamePiece.direction = "";
-            blackGamePiece.speedX = 0;
-            blackGamePiece.speedY = 0;
-        }
-        else {
-            blackGamePiece.setOrientation();
-        }
-        blackGamePiece.update();
-    }
-    else {
-        blackGamePiece.setOrientation();
-        blackGamePiece.update();
-        whiteGamePiece.newPos();
         if (whiteGamePiece.crashWith(blackGamePiece)) {
+            console.log("white crash into black.\n");
             whiteGamePiece.oldPos();
             whiteGamePiece.direction = "";
             whiteGamePiece.speedX = 0;
             whiteGamePiece.speedY = 0;
+            white_moved = false;
         }
         else {
+            console.log("no crash\n");
             whiteGamePiece.setOrientation();
         }
+        console.log("update white's position\n");
         whiteGamePiece.update();
     }
+    return (white_moved || black_moved)
 }
 
 function updateGameArea() {
@@ -397,6 +451,7 @@ function updateGameArea() {
 
     // Redraw the sprites
     var direction = "";
+    var moved = false;
     blackGamePiece.speedX = 0;
     blackGamePiece.speedY = 0;
     whiteGamePiece.speedX = 0;
@@ -408,7 +463,6 @@ function updateGameArea() {
             whiteGamePiece.speedX = -100;
             blackGamePiece.direction = "left"
             whiteGamePiece.direction = "left"
-            moveCounter.move();
 
         }
         else if (myGameArea.key == 39)  // right
@@ -417,7 +471,6 @@ function updateGameArea() {
             whiteGamePiece.speedX = 100;
             blackGamePiece.direction = "right";
             whiteGamePiece.direction = "right";
-            moveCounter.move();
 
         }
         else if (myGameArea.key == 38)  // up
@@ -426,7 +479,6 @@ function updateGameArea() {
             whiteGamePiece.speedY = -100;
             blackGamePiece.direction = "up";
             whiteGamePiece.direction = "up";
-            moveCounter.move();
         }
         else if (myGameArea.key == 40)  // down
         {
@@ -434,10 +486,13 @@ function updateGameArea() {
             whiteGamePiece.speedY = 100;
             blackGamePiece.direction = "down";
             whiteGamePiece.direction = "down";
-            moveCounter.move();
         }
 
-    updateBarrels(blackGamePiece, whiteGamePiece, horizontalWalls, verticalWalls);
+    moved = updateBarrels(blackGamePiece, whiteGamePiece, horizontalWalls, verticalWalls);
+    if (moved)
+    {
+        moveCounter.move();
+    }
     myGameArea.key = false;
     }
     blackGamePiece.update();
