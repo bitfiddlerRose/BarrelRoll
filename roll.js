@@ -88,24 +88,20 @@ function makeImages()
 
 
 function win() {
-    if (moveCounter.positive) 
+    if (blackGamePiece.orientation == 'TOP')
     {
-        if (blackGamePiece.orientation == 'TOP')
+        if (moveCounter.positive)
         {
             // Win
             $("#perfectModal").modal('show');
         }
         else
         {
-            // Win, but barrel in wrong position
-            $("#loseModal").modal('show');
+            // Win, but too many moves
+            $("#winModal").modal('show');
         }
     }
-    else 
-    {
-        // Win, but too many moves
-        $("#winModal").modal('show');
-    }
+    // else you didn't win
 }
 
 function component(width, height, color, x, y) {
