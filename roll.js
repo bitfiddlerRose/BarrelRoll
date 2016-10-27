@@ -88,20 +88,16 @@ function makeImages()
 
 
 function win() {
-    if (blackGamePiece.orientation == 'TOP')
+    if (moveCounter.positive)
     {
-        if (moveCounter.positive)
-        {
-            // Win
-            $("#perfectModal").modal('show');
-        }
-        else
-        {
-            // Win, but too many moves
-            $("#winModal").modal('show');
-        }
+        // Win
+        $("#perfectModal").modal('show');
     }
-    // else you didn't win
+    else
+    {
+        // Win, but too many moves
+        $("#winModal").modal('show');
+    }
 }
 
 function component(width, height, color, x, y) {
@@ -403,7 +399,10 @@ function updateBarrelsOnce(blackGamePiece, whiteGamePiece, black_moved, white_mo
 function updateGameArea() {
     myGameArea.clear();
     // Alert if we won
-    if ((blackGamePiece.x-5 == goalSquare.x) && (blackGamePiece.y-5==goalSquare.y) && !ALERTED)
+    if ((blackGamePiece.x-5 == goalSquare.x) && 
+        (blackGamePiece.y-5==goalSquare.y) && 
+        (blackGamePiece.orientation == 'TOP') &&
+        !ALERTED)
     {
         win();
         ALERTED = true;
