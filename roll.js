@@ -385,8 +385,6 @@ function updateBarrelsOnce(blackGamePiece, whiteGamePiece, black_moved, white_mo
     else 
     {
         whiteGamePiece.newPos();
-        whiteGamePiece.setOrientation();
-        whiteGamePiece.update();
         if (whiteGamePiece.crashWith(blackGamePiece)) {
             whiteGamePiece.oldPos();
             whiteGamePiece.direction = "";
