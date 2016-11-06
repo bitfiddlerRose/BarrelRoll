@@ -538,7 +538,7 @@ $('.modal_footer a.action').on('click', function(event) {
 
 });
 
-$('myCanvas').on('swipedown', function() {
+$('#document').on('swipedown', function() {
 
     blackGamePiece.speedY = 100;
     whiteGamePiece.speedY = 100;
