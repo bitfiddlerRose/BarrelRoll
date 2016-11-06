@@ -88,12 +88,20 @@ function makeImages()
 
 
 function win() {
-    if (moveCounter.positive)
+    if (moveCounter.zero)
     {
-        // Win
-        $("#perfectModal").modal('show');
+        if (blackGamePiece.orientation == 'TOP')
+        {
+            // Win
+            $("#perfectModal").modal('show');
+        }
+        else
+        {
+            // Fail - wrong orientation
+            $("#loseModal").modal('show');
+        }
     }
-    else
+    else if (!moveCounter.positive)
     {
         // Win, but too many moves
         $("#winModal").modal('show');
@@ -143,6 +151,7 @@ function moves(width, height, color, x, y, max_moves) {
     this.y = y;
     this.moves_remaining = max_moves;
     this.positive = true;
+    this.zero = false;
     this.update = function() {
         ctx = myGameArea.context;
         ctx.fillStyle = color;
@@ -155,13 +164,19 @@ function moves(width, height, color, x, y, max_moves) {
         ctx.fillText(this.moves_remaining, this.x+100, this.y+190);
     }
     this.move = function() {
-        if (this.moves_remaining > 0)
+        if (this.moves_remaining > 1)
         {
             this.moves_remaining--;
+        }
+        else if (this.moves_remaining == 1)
+        {
+            this.moves_remaining--;
+            this.zero = true;
         }
         else
         {
             this.positive = false;
+            this.zero = false;
         }
     }
 }
@@ -396,12 +411,13 @@ function updateBarrelsOnce(blackGamePiece, whiteGamePiece, black_moved, white_mo
     return (white_moved || black_moved)
 }
 
+
+
 function updateGameArea() {
     myGameArea.clear();
     // Alert if we won
     if ((blackGamePiece.x-5 == goalSquare.x) && 
         (blackGamePiece.y-5==goalSquare.y) && 
-        (blackGamePiece.orientation == 'TOP') &&
         !ALERTED)
     {
         win();
@@ -460,12 +476,12 @@ function updateGameArea() {
             whiteGamePiece.direction = "down";
         }
 
-    moved = updateBarrels(blackGamePiece, whiteGamePiece, horizontalWalls, verticalWalls);
-    if (moved)
-    {
-        moveCounter.move();
-    }
-    myGameArea.key = false;
+        moved = updateBarrels(blackGamePiece, whiteGamePiece, horizontalWalls, verticalWalls);
+        if (moved)
+        {
+            moveCounter.move();
+        }
+        myGameArea.key = false;
     }
     blackGamePiece.update();
     whiteGamePiece.update();
