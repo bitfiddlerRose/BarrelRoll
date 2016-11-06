@@ -537,3 +537,17 @@ $('.modal_footer a.action').on('click', function(event) {
     }
 
 });
+
+$('myCanvas').on('swipedown', function() {
+
+    blackGamePiece.speedY = 100;
+    whiteGamePiece.speedY = 100;
+    blackGamePiece.direction = "down";
+    whiteGamePiece.direction = "down";
+
+    moved = updateBarrels(blackGamePiece, whiteGamePiece, horizontalWalls, verticalWalls);
+    if (moved)
+    {
+        moveCounter.move();
+    }
+});
