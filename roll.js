@@ -538,12 +538,12 @@ $('.modal_footer a.action').on('click', function(event) {
 
 });
 
-$('#document').on('swipedown', function() {
+$('#document').on('swiperight', function() {
 
-    blackGamePiece.speedY = 100;
-    whiteGamePiece.speedY = 100;
-    blackGamePiece.direction = "down";
-    whiteGamePiece.direction = "down";
+    blackGamePiece.speedX = 100;
+    whiteGamePiece.speedX = 100;
+    blackGamePiece.direction = "right";
+    whiteGamePiece.direction = "right";
 
     moved = updateBarrels(blackGamePiece, whiteGamePiece, horizontalWalls, verticalWalls);
     if (moved)
