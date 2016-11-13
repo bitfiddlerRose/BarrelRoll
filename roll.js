@@ -87,7 +87,9 @@ function makeImages()
 }
 
 
-function win() {
+function win()
+{
+    console.log("in win function");
     if (moveCounter.zero)
     {
         if (blackGamePiece.orientation == 'TOP')
@@ -98,17 +100,25 @@ function win() {
         else
         {
             // Fail - wrong orientation
-            $("#loseModal").modal('show');
+            $("#sideModal").modal('show');
         }
     }
     else if (!moveCounter.positive)
     {
         // Win, but too many moves
-        $("#winModal").modal('show');
+        $("#loseModal").modal('show');
     }
 }
 
-function component(width, height, color, x, y) {
+function lose()
+{
+    // Too many moves
+    console.log("In lose function.");
+    $("#loseModal").modal('show');
+}
+
+function component(width, height, color, x, y)
+{
     this.width = width;
     this.height = height;
     this.x = x;
@@ -415,13 +425,23 @@ function updateBarrelsOnce(blackGamePiece, whiteGamePiece, black_moved, white_mo
 
 function updateGameArea() {
     myGameArea.clear();
-    // Alert if we won
-    if ((blackGamePiece.x-5 == goalSquare.x) && 
-        (blackGamePiece.y-5==goalSquare.y) && 
-        !ALERTED)
+    // Alert if we won or move counter has reached 0
+    if ((!ALERTED) && (moveCounter.moves_remaining == 0))
     {
-        win();
-        ALERTED = true;
+        if ((blackGamePiece.x-5 == goalSquare.x) && 
+            (blackGamePiece.y-5==goalSquare.y))
+        {
+            win();
+            ALERTED = true;
+            console.log("We should have alerted for a win.");
+        }
+        // Alert if we lost
+        else
+        {
+            lose();
+            ALERTED = true;
+            console.log("We should have alerted for a lose.\n");
+        }
     }
     // Redraw the background things
     for (i=0; i<tiles.length;i++) {
@@ -444,7 +464,7 @@ function updateGameArea() {
     blackGamePiece.speedY = 0;
     whiteGamePiece.speedX = 0;
     whiteGamePiece.speedY = 0;
-    if (myGameArea.key) {
+    if (!ALERTED && myGameArea.key) {
         if (myGameArea.key == 37)  // left
         {
             blackGamePiece.speedX = -100;
@@ -538,7 +558,7 @@ $('.modal_footer a.action').on('click', function(event) {
 
 });
 
-$('#document').on('swiperight', function() {
+$('body').on('swiperight', function() {
 
     blackGamePiece.speedX = 100;
     whiteGamePiece.speedX = 100;
