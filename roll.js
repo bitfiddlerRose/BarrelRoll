@@ -132,6 +132,20 @@ function component(width, height, color, x, y)
     }
 }
 
+function hole(radius, x, y)
+{
+    this.radius = radius;
+    this.x = x+51;
+    this.y = y+52;
+    this.update = function() {
+        ctx = myGameArea.context;
+        ctx.beginPath();
+        ctx.fillStyle = "black";
+        ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
+        ctx.fill();
+    }
+}
+
 function textHolder(width, height, color, x, y, text) {
     this.width = width;
     this.height = height;
@@ -448,6 +462,7 @@ function updateGameArea() {
         tiles[i].update();
     }
     goalSquare.update();
+    hole.update();
     for (i=0;i<verticalWalls.length;i++) {
         verticalWalls[i].update();
     }

@@ -28,6 +28,7 @@ $.getScript('roll.js', function()
 
         borders(horizontalWalls, verticalWalls, 400, 400, 100);
         goalSquare = new component(100,100,"green",200,100);
+        hole = new hole(25,200,100);
         setupCounter(5);
     }
 });
