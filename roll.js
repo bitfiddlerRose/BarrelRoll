@@ -462,7 +462,6 @@ function updateGameArea() {
         tiles[i].update();
     }
     goalSquare.update();
-    hole.update();
     for (i=0;i<verticalWalls.length;i++) {
         verticalWalls[i].update();
     }
